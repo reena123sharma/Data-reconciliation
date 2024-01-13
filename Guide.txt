@@ -1,0 +1,42 @@
+1. All the final codes are in matlab except Data generation for electrolyzer and solar cell, as they requires splinefit for irridance data and
+    splinefit function of octave seems to be more accurate and precise.
+   Final codes are accesible in MTP->PVthermal-elec-fc->matlab_codes->EKF/EnKF/RPF/Data_recon
+    and for results MTP->PVthermal-elec-fc->Results
+
+2. Codes file are for three state estimators : DAE-EKF, DAE-EnKF and DAE-RPF and each estimator formulation has three different scenarios : 
+   Single rate, Multi rate and sensor outage.
+
+3. Seperate Code files for solar and fuel cell data reconciliation.
+
+4. All files are integrated with Solar and fuel cell algo are incorrect. please don't use them for solar and fuel results.
+
+5. Don't use saved workspaces for fuel cell data. Fuel cell data generation code has been incorporated with data reconciliation and its in matlab format.
+
+6. Can use saved ws for solar cell data.
+
+
+
+Running any matlab code file:
+DAE-EKF and DAE-EnKF
+1. Put function file name "ElecDae2"(electrolyzer process model), data file(matlab ws(.mat)) and the respective code file in the same directory. 
+2. Change the data file name and sampling rate(Ts(in hrs)) in the code file.
+3. In case of DAE-EnKF, you can also change the no. of particles(Np).
+4. Now it is ready to run.
+
+RPF
+1. Put function file name "ElecDae2", "pdf", "K_h", "K_x", data file(matlab ws(.mat)), and the respective code file in the same directory.
+2. Change the data file name, sampling rate(Ts(in hrs)) and Np in the code file.
+3. Now it is ready to run.
+
+Fuel cell data reconcilition
+It requires data_central.xlsx(contains all generated data for every sub-system at all sampling rates) file in order to extract the current of the electrolyzer. 
+
+Some Error handling tips :
+1. While running EnKF, it might generate some outliers while generating initial particles. To avoid that, put bounds on random particle 
+    generation, like instead of using gaussain distribution, use truncated gaussian.   
+2. While running RPF, it might stuck due to parfor, easiest solution is to remove par from that loop.
+3. It is not advisable to use multiple parfor in a single code.
+
+Interesting fact :
+1. EnKF can handle the poor initialization for all three cases. But RPF do not have this ability because we have to use higher value 
+    of R in RPF, otherwise all the weights(wp) will go to zero. Hence RPF is more dependent on the process model.
